@@ -2,29 +2,19 @@
 require 'config.php';
 if (!is_admin()) redirect('index.php');
 
-$notice = '';
-$error = '';
+$msg = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = trim($_POST['name'] ?? '');
-    $slug = trim($_POST['slug'] ?? '');
-    $image_url = trim($_POST['image_url'] ?? '');
-    $color_hex = $_POST['color_hex'] ?? '#8b5cf6';
+    $image = trim($_POST['image_url'] ?? '');
+    $color = $_POST['color_hex'] ?? '#8b5cf6';
 
-    if (empty($name) || empty($slug)) {
-        $error = "Naam en slug zijn verplicht";
+    if ($name === '') {
+        $msg = "Naam is verplicht";
     } else {
-        try {
-            $stmt = $pdo->prepare("INSERT INTO categories (name, slug, image_url, color_hex) VALUES (?,?,?,?)");
-            $stmt->execute([$name, $slug, $image_url, $color_hex]);
-            $notice = "Categorie succesvol toegevoegd!";
-        } catch (PDOException $e) {
-            if ($e->getCode() == 23000) {
-                $error = "Deze slug bestaat al";
-            } else {
-                $error = "Database fout: " . $e->getMessage();
-            }
-        }
+        $stmt = $pdo->prepare("INSERT INTO categories (name, image_url, color_hex) VALUES (?,?,?)");
+        $stmt->execute([$name, $image, $color]);
+        redirect('index.php');
     }
 }
 ?>
@@ -32,68 +22,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html lang="nl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Nieuwe Categorie</title>
+<title>Nieuwe categorie</title>
 <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
-<header class="topbar">
-    <div class="left">
-        <a href="index.php" class="btn ghost">← Terug</a>
-    </div>
-    <div class="right">
-        <span>Nieuwe Categorie</span>
-    </div>
-</header>
+<main class="container" style="max-width:600px;">
+<h1>Nieuwe categorie</h1>
 
-<main class="container" style="max-width:600px;margin-top:2rem;">
-    <div class="glass-card">
-        <h1>➕ Nieuwe Categorie</h1>
-        
-        <?php if($notice): ?>
-        <div class="notice success"><?= sanitize_output($notice) ?></div>
-        <?php endif; ?>
-        
-        <?php if($error): ?>
-        <div class="notice err"><?= sanitize_output($error) ?></div>
-        <?php endif; ?>
-        
-        <form method="POST">
-            <label>
-                Naam *
-                <input type="text" name="name" required>
-            </label>
-            
-            <label>
-                Slug * <small style="color:var(--text-dim);">(alleen kleine letters, cijfers en streepjes)</small>
-                <input type="text" name="slug" pattern="[a-z0-9-]+" required>
-            </label>
-            
-            <label>
-                Afbeelding URL
-                <input type="url" name="image_url" placeholder="https://...">
-            </label>
-            
-            <label style="display:flex;align-items:center;gap:1rem;">
-                Kleur
-                <input type="color" name="color_hex" value="#8b5cf6" id="catColor">
-                <span class="color-preview" id="colorPreview" style="background-color:#8b5cf6;"></span>
-            </label>
-            
-            <div class="actions">
-                <button type="submit" class="btn btn-purple">💾 Opslaan</button>
-                <a href="index.php" class="btn btn-red">❌ Annuleren</a>
-            </div>
-        </form>
-    </div>
+<?php if($msg): ?><div class="notice err"><?= e($msg) ?></div><?php endif; ?>
+
+<form method="post">
+  <label>Naam <input type="text" name="name" required></label>
+  <label>Afbeelding URL <input type="url" name="image_url"></label>
+  <label>Kleur <input type="color" name="color_hex" value="#8b5cf6"></label>
+  <button class="btn btn-purple">Opslaan</button>
+</form>
 </main>
-
-<script>
-const colorInput = document.getElementById('catColor');
-const colorPreview = document.getElementById('colorPreview');
-colorInput.addEventListener('input', (e) => {
-    colorPreview.style.backgroundColor = e.target.value;
-});
-</script>
 </body>
 </html>
