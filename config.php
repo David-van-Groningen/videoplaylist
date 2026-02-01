@@ -1,13 +1,9 @@
 <?php
 declare(strict_types=1);
-
-session_start([
-    'cookie_httponly' => true,
-    'cookie_samesite' => 'Lax',
-]);
+session_start();
 
 $dsn = 'mysql:host=localhost;dbname=video_platform;charset=utf8mb4';
-$user = 'username';
+$user = 'user';
 $pass = 'password';
 
 try {
@@ -16,7 +12,7 @@ try {
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
     ]);
 } catch (PDOException $e) {
-    exit('Database verbinding mislukt: ' . $e->getMessage());
+    exit('Database fout');
 }
 
 function is_logged_in(): bool {
@@ -25,22 +21,22 @@ function is_logged_in(): bool {
 
 function current_user(PDO $pdo): ?array {
     if (!is_logged_in()) return null;
-    $stmt = $pdo->prepare('SELECT id, username, display_name, email, is_admin FROM users WHERE id=?');
+    $stmt = $pdo->prepare("SELECT id, username, display_name, is_admin FROM users WHERE id=?");
     $stmt->execute([$_SESSION['user_id']]);
     return $stmt->fetch() ?: null;
 }
 
 function is_admin(): bool {
     global $pdo;
-    $user = current_user($pdo);
-    return $user && $user['is_admin'] == 1;
+    $u = current_user($pdo);
+    return $u && $u['is_admin'];
 }
 
-function redirect(string $location): void {
-    header("Location: $location");
+function redirect(string $url): void {
+    header("Location: $url");
     exit;
 }
 
-function sanitize_output(string $str): string {
-    return htmlspecialchars($str, ENT_QUOTES, 'UTF-8');
+function e(string $s): string {
+    return htmlspecialchars($s, ENT_QUOTES, 'UTF-8');
 }
