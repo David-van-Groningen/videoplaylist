@@ -3,10 +3,10 @@
 ## Projectomschrijving
 
 Dit project is een eenvoudig video platform waarmee gebruikers video’s kunnen bekijken per categorie.  
-Admins kunnen categorieën en video’s beheren (toevoegen, aanpassen en verwijderen).  
+Admins kunnen categorieën en video’s beheren (toevoegen, aanpassen en verwijderen).
 
 Het platform is bedoeld voor kleine projecten of schoolopdrachten waar je overzichtelijk video’s wilt organiseren.  
-Het lost het probleem op van het bijhouden en structureren van video’s in categorieën met een simpele admin-omgeving.
+Het lost het probleem op van het structureren en beheren van video’s in categorieën met een simpele beheeromgeving.
 
 ---
 
@@ -18,7 +18,7 @@ Het lost het probleem op van het bijhouden en structureren van video’s in cate
 - Admin kan:
   - Categorieën toevoegen, bewerken en verwijderen
   - Video’s toevoegen, bewerken en verwijderen
-- Beveiligde database queries met prepared statements
+- Veilige database queries met prepared statements
 
 ---
 
