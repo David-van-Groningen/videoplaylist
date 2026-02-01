@@ -3,35 +3,26 @@ require 'config.php';
 if (!is_admin()) redirect('index.php');
 
 $id = intval($_GET['id'] ?? 0);
+
+// Video ophalen
 $stmt = $pdo->prepare("SELECT * FROM videos WHERE id=?");
 $stmt->execute([$id]);
 $video = $stmt->fetch();
-
 if (!$video) redirect('index.php');
 
-$cats = $pdo->query("SELECT * FROM categories ORDER BY name ASC")->fetchAll();
-
-$notice = '';
-$error = '';
+$msg = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $title = trim($_POST['title'] ?? '');
-    $url = trim($_POST['youtube_url'] ?? '');
-    $category_id = intval($_POST['category_id'] ?? 0);
+    $url   = trim($_POST['youtube_url'] ?? '');
 
-    if (empty($title) || empty($url) || $category_id === 0) {
-        $error = "Vul alle velden in";
+    if ($title === '' || $url === '') {
+        $msg = "Titel en YouTube URL zijn verplicht";
     } else {
-        try {
-            $stmt = $pdo->prepare("UPDATE videos SET title=?, youtube_url=?, category_id=? WHERE id=?");
-            $stmt->execute([$title, $url, $category_id, $id]);
-            $notice = "Video succesvol bijgewerkt!";
-            $video['title'] = $title;
-            $video['youtube_url'] = $url;
-            $video['category_id'] = $category_id;
-        } catch (PDOException $e) {
-            $error = "Database fout: " . $e->getMessage();
-        }
+        $stmt = $pdo->prepare("UPDATE videos SET title=?, youtube_url=? WHERE id=?");
+        $stmt->execute([$title, $url, $id]);
+
+        redirect("category_view.php?id=" . $video['category_id']);
     }
 }
 ?>
@@ -39,60 +30,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html lang="nl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Video Bewerken</title>
+<title>Video bewerken</title>
 <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
-<header class="topbar">
-    <div class="left">
-        <a href="index.php" class="btn ghost">← Terug</a>
-    </div>
-    <div class="right">
-        <span>Video Bewerken</span>
-    </div>
-</header>
+<main class="container" style="max-width:600px;">
+<h1>✏️ Video bewerken</h1>
 
-<main class="container" style="max-width:600px;margin-top:2rem;">
-    <div class="glass-card">
-        <h1>✏️ Video Aanpassen</h1>
-        
-        <?php if($notice): ?>
-        <div class="notice success"><?= sanitize_output($notice) ?></div>
-        <?php endif; ?>
-        
-        <?php if($error): ?>
-        <div class="notice err"><?= sanitize_output($error) ?></div>
-        <?php endif; ?>
-        
-        <form method="POST">
-            <label>
-                Titel *
-                <input type="text" name="title" value="<?= sanitize_output($video['title']) ?>" required>
-            </label>
-            
-            <label>
-                YouTube URL *
-                <input type="url" name="youtube_url" value="<?= sanitize_output($video['youtube_url']) ?>" required>
-            </label>
-            
-            <label>
-                Categorie *
-                <select name="category_id" required>
-                    <?php foreach($cats as $cat): ?>
-                    <option value="<?= $cat['id'] ?>" <?= $video['category_id'] == $cat['id'] ? 'selected' : '' ?>>
-                        <?= sanitize_output($cat['name']) ?>
-                    </option>
-                    <?php endforeach; ?>
-                </select>
-            </label>
-            
-            <div class="actions">
-                <button type="submit" class="btn btn-purple">💾 Opslaan</button>
-                <a href="index.php" class="btn btn-red">❌ Annuleren</a>
-            </div>
-        </form>
-    </div>
+<?php if($msg): ?>
+  <div class="notice err"><?= e($msg) ?></div>
+<?php endif; ?>
+
+<form method="post">
+  <label>
+    Titel
+    <input type="text" name="title" value="<?= e($video['title']) ?>" required>
+  </label>
+
+  <label>
+    YouTube URL
+    <input type="url" name="youtube_url" value="<?= e($video['youtube_url']) ?>" required>
+  </label>
+
+  <button class="btn btn-purple">Opslaan</button>
+  <a href="category_view.php?id=<?= $video['category_id'] ?>" class="btn">Annuleren</a>
+</form>
 </main>
 </body>
 </html>
