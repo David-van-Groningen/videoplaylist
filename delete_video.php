@@ -1,31 +1,17 @@
 <?php
-// delete_category.php
 require 'config.php';
 if (!is_admin()) redirect('index.php');
 
 $id = intval($_GET['id'] ?? 0);
-if ($id > 0) {
-    try {
-        $pdo->prepare("DELETE FROM categories WHERE id=?")->execute([$id]);
-    } catch (PDOException $e) {
-        // Stille error handling
-    }
-}
-redirect('index.php');
-?>
 
-<?php
-// delete_video.php
-require 'config.php';
-if (!is_admin()) redirect('index.php');
+// Eerst video ophalen om category_id te kennen
+$stmt = $pdo->prepare("SELECT * FROM videos WHERE id=?");
+$stmt->execute([$id]);
+$video = $stmt->fetch();
+if (!$video) redirect('index.php');
 
-$id = intval($_GET['id'] ?? 0);
-if ($id > 0) {
-    try {
-        $pdo->prepare("DELETE FROM videos WHERE id=?")->execute([$id]);
-    } catch (PDOException $e) {
-        // Stille error handling
-    }
-}
-redirect('index.php');
-?>
+// Verwijderen
+$stmt = $pdo->prepare("DELETE FROM videos WHERE id=?");
+$stmt->execute([$id]);
+
+redirect("category_view.php?id=" . $video['category_id']);
