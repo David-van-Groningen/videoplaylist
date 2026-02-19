@@ -30,12 +30,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <title>Login - Video Platform</title>
 <link rel="stylesheet" href="assets/style.css">
 </head>
-<body class="bg">
+<body>
 <main class="container" style="max-width:450px;margin-top:5rem;">
-    <div class="glass-card">
-        <h1 style="text-align:center;">🔐 Inloggen</h1>
+    <div style="background:#fff; padding:2rem; border-radius:4px; border:1px solid #ddd;">
+        <h1 style="text-align:center;">Inloggen</h1>
         <?php if($err): ?>
-        <div class="notice err"><?= sanitize_output($err) ?></div>
+        <div class="notice err"><?= e($err) ?></div>
         <?php endif; ?>
         <form method="POST">
             <label>
@@ -46,9 +46,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 Wachtwoord
                 <input type="password" name="password" required>
             </label>
-            <div class="actions">
-                <button type="submit" class="btn btn-purple">Login</button>
-                <a href="register.php" class="btn ghost">Registreren</a>
+            <div style="margin-top:1rem; display:flex; gap:0.5rem;">
+                <button type="submit" class="btn btn-yellow">Login</button>
+                <a href="register.php" class="btn">Registreren</a>
             </div>
         </form>
     </div>
