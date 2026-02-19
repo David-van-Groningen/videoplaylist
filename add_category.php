@@ -7,7 +7,7 @@ $msg = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = trim($_POST['name'] ?? '');
     $image = trim($_POST['image_url'] ?? '');
-    $color = $_POST['color_hex'] ?? '#8b5cf6';
+    $color = $_POST['color_hex'] ?? '#FFD700';
 
     if ($name === '') {
         $msg = "Naam is verplicht";
@@ -34,8 +34,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <form method="post">
   <label>Naam <input type="text" name="name" required></label>
   <label>Afbeelding URL <input type="url" name="image_url"></label>
-  <label>Kleur <input type="color" name="color_hex" value="#8b5cf6"></label>
-  <button class="btn btn-purple">Opslaan</button>
+  <label>Kleur <input type="color" name="color_hex" value="#FFD700"></label>
+  <button class="btn btn-yellow">Opslaan</button>
+  <a href="index.php" class="btn">Annuleren</a>
 </form>
 </main>
 </body>
