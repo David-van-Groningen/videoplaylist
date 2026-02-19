@@ -14,9 +14,9 @@ $cats = $pdo->query("SELECT * FROM categories ORDER BY id DESC")->fetchAll();
 </head>
 <body>
 <header class="topbar">
-  <div class="left">📹 Video Dashboard</div>
+  <div class="left">Video Dashboard</div>
   <div class="right">
-    <span>👤 <?= e($user['display_name'] ?? $user['username']) ?></span>
+    <span><?= e($user['display_name'] ?? $user['username']) ?></span>
     <a href="logout.php" class="btn btn-red">Logout</a>
   </div>
 </header>
@@ -24,25 +24,29 @@ $cats = $pdo->query("SELECT * FROM categories ORDER BY id DESC")->fetchAll();
 <main class="container">
 <h1>Categorieën</h1>
 
-<div class="grid cards">
-<?php foreach($cats as $cat): ?>
-  <div class="card-cat">
-    <div class="img" style="background-image:url('<?= e($cat['image_url'] ?: 'assets/default_cat.jpg') ?>')"></div>
-    <h3><?= e($cat['name']) ?></h3>
-    <div class="actions">
-      <a href="category_view.php?id=<?= $cat['id'] ?>" class="btn btn-accent">🎬 Videos</a>
-      <?php if(is_admin()): ?>
-        <a href="edit_category.php?id=<?= $cat['id'] ?>" class="btn btn-purple">✏️</a>
-        <a href="delete_category.php?id=<?= $cat['id'] ?>" class="btn btn-red" onclick="return confirm('Verwijderen?')">🗑️</a>
-      <?php endif; ?>
+<?php if(empty($cats)): ?>
+  <p style="color:#666; margin:2rem 0;">Nog geen categorieën aangemaakt.</p>
+<?php else: ?>
+  <div class="grid cards">
+  <?php foreach($cats as $cat): ?>
+    <div class="card-cat">
+      <div class="img" style="background-image:url('<?= e($cat['image_url'] ?: 'assets/default_cat.jpg') ?>')"></div>
+      <h3><?= e($cat['name']) ?></h3>
+      <div class="actions">
+        <a href="category_view.php?id=<?= $cat['id'] ?>" class="btn btn-yellow">Videos</a>
+        <?php if(is_admin()): ?>
+          <a href="edit_category.php?id=<?= $cat['id'] ?>" class="btn btn-black">Bewerken</a>
+          <a href="delete.php?type=category&id=<?= $cat['id'] ?>" class="btn btn-red" onclick="return confirm('Categorie verwijderen?')">Verwijderen</a>
+        <?php endif; ?>
+      </div>
     </div>
+  <?php endforeach; ?>
   </div>
-<?php endforeach; ?>
-</div>
+<?php endif; ?>
 
 <?php if(is_admin()): ?>
   <div style="margin-top:2rem;text-align:center;">
-    <a href="add_category.php" class="btn btn-purple">➕ Nieuwe categorie</a>
+    <a href="add_category.php" class="btn btn-yellow">Nieuwe categorie</a>
   </div>
 <?php endif; ?>
 </main>
