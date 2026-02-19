@@ -4,7 +4,6 @@ if (!is_admin()) redirect('index.php');
 
 $id = intval($_GET['id'] ?? 0);
 
-// Video ophalen
 $stmt = $pdo->prepare("SELECT * FROM videos WHERE id=?");
 $stmt->execute([$id]);
 $video = $stmt->fetch();
@@ -35,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body>
 <main class="container" style="max-width:600px;">
-<h1>✏️ Video bewerken</h1>
+<h1>Video bewerken</h1>
 
 <?php if($msg): ?>
   <div class="notice err"><?= e($msg) ?></div>
@@ -52,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <input type="url" name="youtube_url" value="<?= e($video['youtube_url']) ?>" required>
   </label>
 
-  <button class="btn btn-purple">Opslaan</button>
+  <button class="btn btn-yellow">Opslaan</button>
   <a href="category_view.php?id=<?= $video['category_id'] ?>" class="btn">Annuleren</a>
 </form>
 </main>
