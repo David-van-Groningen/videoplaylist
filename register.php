@@ -37,12 +37,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <title>Registreren - Video Platform</title>
 <link rel="stylesheet" href="assets/style.css">
 </head>
-<body class="bg">
+<body>
 <main class="container" style="max-width:450px;margin-top:5rem;">
-    <div class="glass-card">
-        <h1 style="text-align:center;">📝 Registreren</h1>
+    <div style="background:#fff; padding:2rem; border-radius:4px; border:1px solid #ddd;">
+        <h1 style="text-align:center;">Registreren</h1>
         <?php if($error): ?>
-        <div class="notice err"><?= sanitize_output($error) ?></div>
+        <div class="notice err"><?= e($error) ?></div>
         <?php endif; ?>
         <form method="POST">
             <label>
@@ -61,9 +61,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 Bevestig Wachtwoord
                 <input type="password" name="password_confirm" minlength="6" required>
             </label>
-            <div class="actions">
-                <button type="submit" class="btn btn-purple">Registreren</button>
-                <a href="login.php" class="btn ghost">Terug naar Login</a>
+            <div style="margin-top:1rem; display:flex; gap:0.5rem;">
+                <button type="submit" class="btn btn-yellow">Registreren</button>
+                <a href="login.php" class="btn">Terug naar Login</a>
             </div>
         </form>
     </div>
