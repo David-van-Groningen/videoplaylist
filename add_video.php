@@ -4,7 +4,6 @@ if (!is_admin()) redirect('index.php');
 
 $category_id = intval($_GET['category_id'] ?? 0);
 
-// Check of categorie bestaat
 $stmt = $pdo->prepare("SELECT * FROM categories WHERE id=?");
 $stmt->execute([$category_id]);
 $category = $stmt->fetch();
@@ -42,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body>
 <main class="container" style="max-width:600px;">
-<h1>➕ Video toevoegen aan <?= e($category['name']) ?></h1>
+<h1>Video toevoegen aan <?= e($category['name']) ?></h1>
 
 <?php if($msg): ?>
   <div class="notice err"><?= e($msg) ?></div>
@@ -59,7 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <input type="url" name="youtube_url" required>
   </label>
 
-  <button class="btn btn-purple">Opslaan</button>
+  <button class="btn btn-yellow">Opslaan</button>
   <a href="category_view.php?id=<?= $category_id ?>" class="btn">Annuleren</a>
 </form>
 </main>
